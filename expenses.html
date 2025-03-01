@@ -13,7 +13,8 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px; /* Add some margin below the table */
+            margin-bottom: 20px;
+            /* Add some margin below the table */
         }
 
         th,
@@ -88,7 +89,6 @@
 
         function isExpenseVisible(expense, currentDate) {
             const currentMonth = currentDate.getMonth(); // 0-11
-            const currentYear = currentDate.getFullYear();
 
             if (expense.month === "all") {
                 return true;
@@ -119,12 +119,13 @@
             row.appendChild(expenseCell);
             row.appendChild(priceCell);
 
+            // Corrected logic for past/upcoming row coloring
             const expenseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), expense.day);
-            if (expenseDate < new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())) {
-                row.style.backgroundColor = "green";
-            }
-            else {
-                row.style.backgroundColor = "red";
+            const todayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+            if (expenseDate <= todayDate) {
+                row.classList.add('past'); // Use CSS class for styling
+            } else {
+                row.classList.add('upcoming'); // Use CSS class for styling
             }
 
             return row;
@@ -132,12 +133,14 @@
 
         function calculateTotalRemainingExpenses(expenses, currentDate) {
             let totalRemainingExpenses = 0;
+            const todayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
             for (const expense of expenses) {
                 if (isExpenseVisible(expense, currentDate)) {
                     const expenseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), expense.day);
-                    const todayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-                    if (expenseDate >= todayDate) {
+
+                    // Corrected logic: only add if it is in the future (red)
+                    if (expenseDate > todayDate) {
                         totalRemainingExpenses += expense.price;
                     }
                 }
@@ -159,12 +162,12 @@
             tableBody.innerHTML = ''; // Clear existing rows
 
             const filteredExpenses = expenses.filter(expense => {
-              const expenseMonth = expense.month;
-              if(expenseMonth === "all" || expenseMonth === "quarterly"){
-                return isExpenseVisible(expense, date);
-              }
-              const expenseMonthIndex = new Date(Date.parse(expenseMonth + " 1, 2023")).getMonth();
-              return date.getMonth() === expenseMonthIndex;
+                const expenseMonth = expense.month;
+                if (expenseMonth === "all" || expenseMonth === "quarterly") {
+                    return isExpenseVisible(expense, date);
+                }
+                const expenseMonthIndex = new Date(Date.parse(expenseMonth + " 1, 2023")).getMonth();
+                return date.getMonth() === expenseMonthIndex;
             });
 
             for (const expense of filteredExpenses) {

@@ -80,7 +80,7 @@
             border-bottom-right-radius: 0;
         }
         #day-select-container {
-            margin-bottom: 20px; /* Add margin below the dropdown */
+            margin-top: 20px; /* Add margin above the dropdown */
             display: flex;
             justify-content: center;
         }
@@ -97,10 +97,7 @@
         <h2 id="current-month"></h2>
         <button id="next-month">Next</button>
     </div>
-    <div id="day-select-container">
-        <label for="day-select">Select Day: </label>
-        <select id="day-select"></select>
-    </div>
+   
 
     <table>
         <thead>
@@ -120,6 +117,10 @@
             </tr>
         </tfoot>
     </table>
+    <div id="day-select-container">
+        <label for="day-select">Select Day: </label>
+        <select id="day-select"></select>
+    </div>
 
     <script>
         let currentDisplayedDate = new Date();

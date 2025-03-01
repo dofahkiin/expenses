@@ -53,12 +53,36 @@
             border-radius: 5px;
             padding: 5px 10px;
             cursor: pointer;
+            margin: 0;
         }
 
         .location-button.active {
             background-color: #ccf;
             border: 1px solid #99f;
             font-weight: bold;
+        }
+
+        .location-button + .location-button {
+            margin-left: -1px;
+        }
+
+        .month-nav .location-button {
+            margin: 0;
+        }
+
+        .month-nav .location-button:not(:first-child) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .month-nav .location-button:not(:last-child) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        #day-select-container {
+            margin-bottom: 20px; /* Add margin below the dropdown */
+            display: flex;
+            justify-content: center;
         }
     </style>
 </head>
@@ -72,6 +96,10 @@
         <button id="prev-month">Previous</button>
         <h2 id="current-month"></h2>
         <button id="next-month">Next</button>
+    </div>
+    <div id="day-select-container">
+        <label for="day-select">Select Day: </label>
+        <select id="day-select"></select>
     </div>
 
     <table>
@@ -95,7 +123,8 @@
 
     <script>
         let currentDisplayedDate = new Date();
-        let currentExpensesFile = 'at_expenses.json'; // Default to Austria
+        let currentExpensesFile = 'at_expenses.json';
+        let currentExpensesData = [];
 
         async function loadExpenses(filename) {
             const response = await fetch(filename);
@@ -103,21 +132,26 @@
             return data.expenses;
         }
 
-        function isExpenseVisible(expense, currentDate) {
+        function isExpenseVisible(expense, currentDate, currentExpensesFile) {
             const currentMonth = currentDate.getMonth();
 
-            if (expense.month === "all") {
-                return true;
-            }
+            if (currentExpensesFile === 'at_expenses.json') {
+                if (expense.month === "all") {
+                    return true;
+                }
 
-            if (expense.month === "quarterly") {
-                return currentMonth === 2 || currentMonth === 5 || currentMonth === 8 || currentMonth === 11;
-            }
+                if (expense.month === "quarterly") {
+                    return currentMonth === 2 || currentMonth === 5 || currentMonth === 8 || currentMonth === 11;
+                }
 
-            if (expense.month === "february") {
-                return currentMonth === 1;
+                if (expense.month === "february") {
+                    return currentMonth === 1;
+                }
+            } else {
+                if (expense.month === "all") {
+                    return true;
+                }
             }
-
             return false;
         }
 
@@ -151,7 +185,7 @@
             const todayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
             for (const expense of expenses) {
-                if (isExpenseVisible(expense, currentDate)) {
+                if (isExpenseVisible(expense, currentDate, currentExpensesFile)) {
                     const expenseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), expense.day);
 
                     if (expenseDate > todayDate) {
@@ -172,16 +206,22 @@
 
         async function updateExpensesTable(date) {
             const expenses = await loadExpenses(currentExpensesFile);
+            currentExpensesData = expenses;
             const tableBody = document.getElementById('expenses-table-body');
             tableBody.innerHTML = '';
 
             const filteredExpenses = expenses.filter(expense => {
                 const expenseMonth = expense.month;
                 if (expenseMonth === "all" || expenseMonth === "quarterly") {
-                    return isExpenseVisible(expense, date);
+                    return isExpenseVisible(expense, date, currentExpensesFile);
                 }
-                const expenseMonthIndex = new Date(Date.parse(expenseMonth + " 1, 2023")).getMonth();
-                return date.getMonth() === expenseMonthIndex;
+
+                if (currentExpensesFile === 'at_expenses.json') {
+                    const expenseMonthIndex = new Date(Date.parse(expenseMonth + " 1, 2023")).getMonth();
+                    return date.getMonth() === expenseMonthIndex;
+                } else {
+                    return false;
+                }
             });
 
             for (const expense of filteredExpenses) {
@@ -197,26 +237,40 @@
             currentDisplayedDate.setMonth(currentDisplayedDate.getMonth() - 1);
             updateExpensesTable(currentDisplayedDate);
             updateCurrentMonthDisplay(currentDisplayedDate);
+            updateDaySelect();
         }
 
         function navigateToNextMonth() {
             currentDisplayedDate.setMonth(currentDisplayedDate.getMonth() + 1);
             updateExpensesTable(currentDisplayedDate);
             updateCurrentMonthDisplay(currentDisplayedDate);
+            updateDaySelect();
         }
 
         function toggleLocationButton(buttonId) {
-          const atButton = document.getElementById('at-button');
-          const bhButton = document.getElementById('bh-button');
+            const atButton = document.getElementById('at-button');
+            const bhButton = document.getElementById('bh-button');
 
-          if(buttonId === "at-button"){
-            atButton.classList.add('active');
-            bhButton.classList.remove('active');
-          }
-          else{
-            bhButton.classList.add('active');
-            atButton.classList.remove('active');
-          }
+            if (buttonId === "at-button") {
+                atButton.classList.add('active');
+                bhButton.classList.remove('active');
+            } else {
+                bhButton.classList.add('active');
+                atButton.classList.remove('active');
+            }
+        }
+        function updateDaySelect() {
+            const daySelect = document.getElementById('day-select');
+            daySelect.innerHTML = ''; // Clear existing options
+
+            const daysInMonth = new Date(currentDisplayedDate.getFullYear(), currentDisplayedDate.getMonth() + 1, 0).getDate();
+            for (let i = 1; i <= daysInMonth; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.text = i;
+                daySelect.appendChild(option);
+            }
+            daySelect.value = currentDisplayedDate.getDate();
         }
 
         // Event Listeners
@@ -235,9 +289,16 @@
             updateExpensesTable(currentDisplayedDate);
         });
 
+        document.getElementById('day-select').addEventListener('change', () => {
+            const selectedDay = parseInt(document.getElementById('day-select').value);
+            currentDisplayedDate.setDate(selectedDay);
+            updateExpensesTable(currentDisplayedDate);
+        });
+
         // Initial setup
         updateExpensesTable(currentDisplayedDate);
         updateCurrentMonthDisplay(currentDisplayedDate);
+        updateDaySelect();
     </script>
 </body>
 

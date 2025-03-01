@@ -1,0 +1,60 @@
+{
+  "expenses": [
+    {
+      "day": 1,
+      "month": "all",
+      "expense": "Cleverfit",
+      "price": -30,
+      "recurring": "monthly"
+    },
+    {
+      "day": 5,
+      "month": "all",
+      "expense": "Umbau",
+      "price": -751,
+      "recurring": "monthly"
+    },
+    {
+        "day": 19,
+        "month": "february",
+        "expense": "Magenta",
+        "price": -25,
+        "recurring": "yearly"
+      },
+    {
+      "day": 18,
+      "month": "all",
+      "expense": "Magenta",
+      "price": -42,
+      "recurring": "monthly"
+    },
+    {
+      "day": 25,
+      "month": "all",
+      "expense": "Sparkasse savings",
+      "price": -50,
+      "recurring": "monthly"
+    },
+    {
+      "day": 25,
+      "month": "all",
+      "expense": "Apple iCloud",
+      "price": -1,
+      "recurring": "monthly"
+    },
+    {
+      "day": 29,
+      "month": "quarterly",
+      "expense": "Sparkasse account expenses",
+      "price": -19,
+      "recurring": "quarterly"
+    },
+    {
+      "day": 29,
+      "month": "all",
+      "expense": "DREI",
+      "price": -5,
+      "recurring": "monthly"
+    }
+  ]
+}

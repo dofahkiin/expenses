@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expenses Table</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 5px;
+    }
+
+    .past {
+      background-color: green;
+    }
+
+    .upcoming {
+      background-color: red;
+    }
+
+    .total {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Expenses Table</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Expense</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+     <tr>
+        <td>01</td>
+        <td>Cleverfit</td>
+        <td>-30</td>
+      </tr>
+      <tr>
+        <td>05</td>
+        <td>Umbau</td>
+        <td>-751</td>
+      </tr>
+      <tr>
+        <td>18</td>
+        <td>Magenta</td>
+        <td>-39</td>
+      </tr>
+      <tr>
+        <td>25</td>
+        <td>Sparkasse savings</td>
+        <td>-50</td>
+      </tr>
+      <tr>
+        <td>25</td>
+        <td>Apple iCloud</td>
+        <td>-1</td>
+      </tr>
+      <tr id="sparkasse-expenses">
+        <td>29</td>
+        <td>Sparkasse account expenses</td>
+        <td>-19</td>
+      </tr>
+      <tr>
+        <td>29</td>
+        <td>DREI</td>
+        <td>-5</td>
+      </tr>
+     </tbody>
+    <tfoot>
+      <tr>
+        <td class="total" colspan="2">Total remaining expenses:</td>
+        <td class="total" id="total-remaining-expenses"></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script>
+    // Calculate the total remaining expenses
+    function calculateTotalRemainingExpenses() {
+      var totalRemainingExpenses = 0;
+      var today = new Date();
+      today.setDate(today.getDate() + 1);
+      var todayDate = today.getDate();
+
+      // Get all the expenses from the table
+      var expenses = document.querySelectorAll("tbody tr");
+
+      // Iterate over the expenses and add up the prices of the upcoming expenses
+      for (var i = 0; i < expenses.length; i++) {
+        var expense = expenses[i];
+        var expenseDate = parseInt(expense.querySelector("td:first-child").textContent);
+
+        /*if (expenseDate >= todayDate) {
+          totalRemainingExpenses += parseFloat(expense.querySelector("td:last-child").textContent);
+        }*/
+        if (expense.style.display !== "none" && expenseDate >= todayDate) {
+          totalRemainingExpenses += parseFloat(expense.querySelector("td:last-child").textContent);
+        }
+
+      }
+
+      // Update the total remaining expenses element
+      document.getElementById("total-remaining-expenses").textContent = totalRemainingExpenses;
+    }
+
+    // Change the colors of the rows depending on the date of the month
+    function changeRowColors() {
+      var today = new Date();
+      today.setDate(today.getDate() + 1);
+      var todayDate = today.getDate();
+      var rows = document.querySelectorAll("tbody tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var rowDate = parseInt(row.querySelector("td:first-child").textContent);
+
+        if (rowDate < todayDate) {
+          row.style.backgroundColor = "green";
+        } else {
+          row.style.backgroundColor = "red";
+        }
+      }
+    }
+
+    function toggleSparkasseExpenses() {
+      var currentDate = new Date();
+      var currentMonth = currentDate.getMonth(); // getMonth() returns 0 for January, 1 for February, etc.
+
+      var sparkasseExpensesRow = document.getElementById("sparkasse-expenses");
+
+      // Check if the current month is March, June, September, or December
+      if (currentMonth === 2 || currentMonth === 5 || currentMonth === 8 || currentMonth === 11) {
+        sparkasseExpensesRow.style.display = ""; // Show the row
+      } else {
+        sparkasseExpensesRow.style.display = "none"; // Hide the row
+      }
+    }
+
+
+    toggleSparkasseExpenses();
+    // Calculate the total remaining expenses when the page loads
+    calculateTotalRemainingExpenses();
+
+    // Change the colors of the rows when the page loads
+    changeRowColors();
+  </script>
+</body>
+
+</html>

@@ -14,7 +14,6 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            /* Add some margin below the table */
         }
 
         th,
@@ -47,6 +46,20 @@
             padding: 5px 10px;
             cursor: pointer;
         }
+
+        .location-button {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .location-button.active {
+            background-color: #ccf;
+            border: 1px solid #99f;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -54,6 +67,8 @@
     <h1>Expenses Table</h1>
 
     <div class="month-nav">
+        <button id="at-button" class="location-button active">Austria</button>
+        <button id="bh-button" class="location-button">Bosnia</button>
         <button id="prev-month">Previous</button>
         <h2 id="current-month"></h2>
         <button id="next-month">Next</button>
@@ -80,15 +95,16 @@
 
     <script>
         let currentDisplayedDate = new Date();
+        let currentExpensesFile = 'at_expenses.json'; // Default to Austria
 
-        async function loadExpenses() {
-            const response = await fetch('expenses.json');
+        async function loadExpenses(filename) {
+            const response = await fetch(filename);
             const data = await response.json();
             return data.expenses;
         }
 
         function isExpenseVisible(expense, currentDate) {
-            const currentMonth = currentDate.getMonth(); // 0-11
+            const currentMonth = currentDate.getMonth();
 
             if (expense.month === "all") {
                 return true;
@@ -119,13 +135,12 @@
             row.appendChild(expenseCell);
             row.appendChild(priceCell);
 
-            // Corrected logic for past/upcoming row coloring
             const expenseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), expense.day);
             const todayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
             if (expenseDate <= todayDate) {
-                row.classList.add('past'); // Use CSS class for styling
+                row.classList.add('past');
             } else {
-                row.classList.add('upcoming'); // Use CSS class for styling
+                row.classList.add('upcoming');
             }
 
             return row;
@@ -139,7 +154,6 @@
                 if (isExpenseVisible(expense, currentDate)) {
                     const expenseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), expense.day);
 
-                    // Corrected logic: only add if it is in the future (red)
                     if (expenseDate > todayDate) {
                         totalRemainingExpenses += expense.price;
                     }
@@ -157,9 +171,9 @@
         }
 
         async function updateExpensesTable(date) {
-            const expenses = await loadExpenses();
+            const expenses = await loadExpenses(currentExpensesFile);
             const tableBody = document.getElementById('expenses-table-body');
-            tableBody.innerHTML = ''; // Clear existing rows
+            tableBody.innerHTML = '';
 
             const filteredExpenses = expenses.filter(expense => {
                 const expenseMonth = expense.month;
@@ -191,9 +205,35 @@
             updateCurrentMonthDisplay(currentDisplayedDate);
         }
 
+        function toggleLocationButton(buttonId) {
+          const atButton = document.getElementById('at-button');
+          const bhButton = document.getElementById('bh-button');
+
+          if(buttonId === "at-button"){
+            atButton.classList.add('active');
+            bhButton.classList.remove('active');
+          }
+          else{
+            bhButton.classList.add('active');
+            atButton.classList.remove('active');
+          }
+        }
+
         // Event Listeners
         document.getElementById('prev-month').addEventListener('click', navigateToPreviousMonth);
         document.getElementById('next-month').addEventListener('click', navigateToNextMonth);
+
+        document.getElementById('at-button').addEventListener('click', () => {
+            currentExpensesFile = 'at_expenses.json';
+            toggleLocationButton('at-button');
+            updateExpensesTable(currentDisplayedDate);
+        });
+
+        document.getElementById('bh-button').addEventListener('click', () => {
+            currentExpensesFile = 'bh_expenses.json';
+            toggleLocationButton('bh-button');
+            updateExpensesTable(currentDisplayedDate);
+        });
 
         // Initial setup
         updateExpensesTable(currentDisplayedDate);

@@ -1,0 +1,68 @@
+{
+    "expenses": [
+      {
+        "day": 3,
+        "month": "all",
+        "expense": "Rata nenamjenskog kredita",
+        "price": -155,
+        "recurring": "monthly"
+      },
+      {
+        "day": 6,
+        "month": "all",
+        "expense": "BL MTEL kablovska",
+        "price": -71,
+        "recurring": "monthly"
+      },
+      {
+        "day": 9,
+        "month": "all",
+        "expense": "BL Elektricna energija",
+        "price": -40,
+        "recurring": "monthly"
+      },
+      {
+        "day": 9,
+        "month": "all",
+        "expense": "BL Cistoca",
+        "price": -14,
+        "recurring": "monthly"
+      },
+      {
+        "day": 15,
+        "month": "all",
+        "expense": "BL ZEV",
+        "price": -32,
+        "recurring": "monthly"
+      },
+      {
+        "day": 15,
+        "month": "all",
+        "expense": "DI.FM",
+        "price": -5.5,
+        "recurring": "monthly"
+      },
+      {
+        "day": 18,
+        "month": "all",
+        "expense": "Spotify",
+        "price": -15,
+        "recurring": "monthly"
+      },
+      {
+        "day": 27,
+        "month": "all",
+        "expense": "BL MTEL Mobilni",
+        "price": -10,
+        "recurring": "monthly"
+      },
+      {
+        "day": 28,
+        "month": "all",
+        "expense": "Sparkasse",
+        "price": -5,
+        "recurring": "monthly"
+      }
+    ]
+  }
+  

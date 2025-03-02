@@ -79,17 +79,31 @@
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
         }
+
         #day-select-container {
-            margin-top: 20px; /* Add margin above the dropdown */
+            margin-top: 20px;
+            /* Add margin above the dropdown */
             display: flex;
             justify-content: center;
         }
+
         /* Fixed width for the Day column */
         th:nth-child(1),
         td:nth-child(1) {
-            width: 50px; /* Adjust the width as needed */
+            width: 50px;
+            /* Adjust the width as needed */
             min-width: 50px;
             max-width: 50px;
+            text-align: center;
+        }
+
+        /* Fixed width for the Price column */
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 80px;
+            /* Adjust the width as needed */
+            min-width: 80px;
+            max-width: 80px;
             text-align: center;
         }
     </style>
@@ -105,7 +119,7 @@
         <h2 id="current-month"></h2>
         <button id="next-month">Next</button>
     </div>
-   
+
 
     <table>
         <thead>
@@ -268,6 +282,7 @@
                 atButton.classList.remove('active');
             }
         }
+
         function updateDaySelect() {
             const daySelect = document.getElementById('day-select');
             daySelect.innerHTML = ''; // Clear existing options

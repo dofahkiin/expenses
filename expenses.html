@@ -144,7 +144,7 @@
 
     <script>
         let currentDisplayedDate = new Date();
-        let currentExpensesFile = 'at_expenses.json';
+        let currentExpensesFile = 'expenses/at_expenses.json';
         let currentExpensesData = [];
 
         async function loadExpenses(filename) {
@@ -300,13 +300,13 @@
         document.getElementById('next-month').addEventListener('click', navigateToNextMonth);
 
         document.getElementById('at-button').addEventListener('click', () => {
-            currentExpensesFile = 'at_expenses.json';
+            currentExpensesFile = 'expenses/at_expenses.json';
             toggleLocationButton('at-button');
             updateExpensesTable(currentDisplayedDate);
         });
 
         document.getElementById('bh-button').addEventListener('click', () => {
-            currentExpensesFile = 'bh_expenses.json';
+            currentExpensesFile = 'expenses/bh_expenses.json';
             toggleLocationButton('bh-button');
             updateExpensesTable(currentDisplayedDate);
         });

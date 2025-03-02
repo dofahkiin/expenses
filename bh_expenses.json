@@ -1,37 +1,37 @@
 {
     "expenses": [
       {
-        "day": 3,
+        "day": 1,
         "month": "all",
-        "expense": "Rata nenamjenskog kredita",
+        "expense": "Kredit",
         "price": -155,
         "recurring": "monthly"
       },
       {
         "day": 6,
         "month": "all",
-        "expense": "BL MTEL kablovska",
+        "expense": "Internet",
         "price": -71,
         "recurring": "monthly"
       },
       {
         "day": 9,
         "month": "all",
-        "expense": "BL Elektricna energija",
+        "expense": "Struja",
         "price": -40,
         "recurring": "monthly"
       },
       {
         "day": 9,
         "month": "all",
-        "expense": "BL Cistoca",
+        "expense": "Cistoca",
         "price": -14,
         "recurring": "monthly"
       },
       {
         "day": 15,
         "month": "all",
-        "expense": "BL ZEV",
+        "expense": "ZEV",
         "price": -32,
         "recurring": "monthly"
       },
@@ -52,7 +52,7 @@
       {
         "day": 27,
         "month": "all",
-        "expense": "BL MTEL Mobilni",
+        "expense": "Mobilni",
         "price": -10,
         "recurring": "monthly"
       },

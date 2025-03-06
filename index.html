@@ -8,147 +8,302 @@
     <link rel="manifest" href="manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expenses</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-light: #6e8ebe;
+            --primary-dark: #345286;
+            --accent-color: #f9a826;
+            --text-color: #333333;
+            --light-gray: #f5f7fa;
+            --medium-gray: #e1e5eb;
+            --dark-gray: #677788;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --pending-color: #f2eead;
+            --radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .app-container {
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .app-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .location-nav {
+            display: flex;
+            background-color: var(--primary-dark);
+            padding: 8px 16px;
+        }
+
+        .location-button {
+            background-color: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-radius: var(--radius);
+            flex: 1;
+            text-align: center;
+        }
+
+        .location-button.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .location-button:hover:not(.active) {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .month-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background-color: white;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .month-nav button {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .month-nav button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .month-nav h3 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
 
-        th,
+        thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 500;
+        }
+
         td {
-            border: 1px solid black;
-            padding: 5px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: var(--light-gray);
         }
 
         .past {
-            background-color: green;
+            border-left: 4px solid var(--success-color);
         }
 
         .upcoming {
-            background-color: red;
+            border-left: 4px solid var(--danger-color);
         }
 
-        .total {
-            font-weight: bold;
+        .expense-amount {
+            font-weight: 500;
+            text-align: right;
         }
 
-        .month-nav {
+        .total-section {
+            background-color: var(--primary-light);
+            color: white;
+            padding: 16px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
         }
 
-        .month-nav button {
-            margin: 0 10px;
-            padding: 5px 10px;
-            cursor: pointer;
+        .total-label {
+            font-weight: 500;
         }
 
-        .location-button {
-            background-color: #eee;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin: 0;
-        }
-
-        .location-button.active {
-            background-color: #ccf;
-            border: 1px solid #99f;
-            font-weight: bold;
-        }
-
-        .location-button + .location-button {
-            margin-left: -1px;
-        }
-
-        .month-nav .location-button {
-            margin: 0;
-        }
-
-        .month-nav .location-button:not(:first-child) {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        .month-nav .location-button:not(:last-child) {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
+        .total-amount {
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
         #day-select-container {
-            margin-top: 20px;
-            /* Add margin above the dropdown */
+            padding: 16px;
+            background-color: white;
             display: flex;
             justify-content: center;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid var(--medium-gray);
         }
 
-        /* Fixed width for the Day column */
-        th:nth-child(1),
-        td:nth-child(1) {
-            width: 50px;
-            /* Adjust the width as needed */
-            min-width: 50px;
-            max-width: 50px;
-            text-align: center;
-        }
-
-        /* Fixed width for the Price column */
-        th:nth-child(3),
-        td:nth-child(3) {
-            width: 80px;
-            /* Adjust the width as needed */
+        #day-select {
+            padding: 8px 12px;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--radius);
+            background-color: white;
             min-width: 80px;
-            max-width: 80px;
+            cursor: pointer;
+        }
+
+        .expense-icon {
+            color: var(--dark-gray);
+            margin-right: 8px;
+        }
+
+        /* Fixed width for columns */
+        .day-column {
+            width: 60px;
             text-align: center;
+        }
+
+        .price-column {
+            width: 100px;
+            text-align: right;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            body {
+                padding: 0;
+            }
+            
+            .app-container {
+                border-radius: 0;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="month-nav">
-        <button id="at-button" class="location-button active">Austria</button>
-        <button id="bh-button" class="location-button">Bosnia</button>
-        <button id="prev-month">Prev</button>
-        <h3 id="current-month"></h3>
-        <button id="next-month">Next</button>
-    </div>
+    <div class="app-container">
+        <div class="app-header">
+            <h1>Expense Tracker</h1>
+        </div>
 
+        <div class="location-nav">
+            <button id="at-button" class="location-button active">Austria</button>
+            <button id="bh-button" class="location-button">Bosnia</button>
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Day</th>
-                <th>Expense</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-        <tbody id="expenses-table-body">
-            <!-- Expenses will be added here -->
-        </tbody>
-        <tfoot>
-            <tr>
-                <td class="total" colspan="2">Total remaining expenses:</td>
-                <td class="total" id="total-remaining-expenses"></td>
-            </tr>
-        </tfoot>
-    </table>
-    <div id="day-select-container">
-        <label for="day-select">Select Day: </label>
-        <select id="day-select"></select>
+        <div class="month-nav">
+            <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+            <h3 id="current-month"></h3>
+            <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="day-column">Day</th>
+                    <th>Expense</th>
+                    <th class="price-column">Price</th>
+                </tr>
+            </thead>
+            <tbody id="expenses-table-body">
+                <!-- Expenses will be added here -->
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <div class="total-label">Total Remaining:</div>
+            <div id="total-remaining-expenses" class="total-amount"></div>
+        </div>
+
+        <div id="day-select-container">
+            <label for="day-select">Select Day:</label>
+            <select id="day-select"></select>
+        </div>
     </div>
 
     <script>
         let currentDisplayedDate = new Date();
         let currentExpensesFile = 'at_expenses.json';
         let currentExpensesData = [];
+
+        // Icons for different expense types (you can customize these)
+        const expenseIcons = {
+            "default": "fas fa-receipt",
+            "rent": "fas fa-home",
+            "bill": "fas fa-file-invoice",
+            "utilities": "fas fa-bolt",
+            "internet": "fas fa-wifi",
+            "phone": "fas fa-mobile-alt",
+            "insurance": "fas fa-shield-alt",
+            "subscription": "fas fa-sync-alt",
+            "tax": "fas fa-balance-scale",
+            "groceries": "fas fa-shopping-basket"
+        };
+
+        // Helper function to get appropriate icon for an expense
+        function getExpenseIcon(expenseName) {
+            const lowerName = expenseName.toLowerCase();
+            for (const [key, icon] of Object.entries(expenseIcons)) {
+                if (lowerName.includes(key)) {
+                    return icon;
+                }
+            }
+            return expenseIcons.default;
+        }
 
         async function loadExpenses(filename) {
             const response = await fetch(filename);
@@ -186,8 +341,19 @@
             const priceCell = document.createElement('td');
 
             dayCell.textContent = expense.day;
-            expenseCell.textContent = expense.expense;
-            priceCell.textContent = expense.price;
+            dayCell.className = 'day-column';
+
+            // Add icon to expense
+            const icon = document.createElement('i');
+            icon.className = `${getExpenseIcon(expense.expense)} expense-icon`;
+            expenseCell.appendChild(icon);
+            expenseCell.appendChild(document.createTextNode(expense.expense));
+
+            priceCell.textContent = expense.price.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            priceCell.className = 'expense-amount price-column';
 
             row.appendChild(dayCell);
             row.appendChild(expenseCell);
@@ -254,7 +420,10 @@
             }
 
             const totalRemaining = calculateTotalRemainingExpenses(filteredExpenses, date);
-            document.getElementById('total-remaining-expenses').textContent = totalRemaining;
+            document.getElementById('total-remaining-expenses').textContent = totalRemaining.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
 
         function navigateToPreviousMonth() {

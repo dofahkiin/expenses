@@ -8,7 +8,7 @@
         "recurring": "monthly"
       },
       {
-        "day": 6,
+        "day": 4,
         "month": "all",
         "expense": "Internet",
         "price": -71,

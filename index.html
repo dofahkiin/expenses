@@ -298,6 +298,40 @@
             daySelect.value = currentDisplayedDate.getDate();
         }
 
+        // Function to check if the day needs to be updated
+        function checkAndUpdateCurrentDay() {
+            const today = new Date();
+            
+            // Check if we're on the same day
+            if (today.getDate() !== currentDisplayedDate.getDate() || 
+                today.getMonth() !== currentDisplayedDate.getMonth() ||
+                today.getFullYear() !== currentDisplayedDate.getFullYear()) {
+                
+                // Update the current date to today
+                currentDisplayedDate = today;
+                
+                // Update the day select dropdown
+                updateDaySelect();
+                
+                // Update the expenses table with the new date
+                updateExpensesTable(currentDisplayedDate);
+                updateCurrentMonthDisplay(currentDisplayedDate);
+            }
+        }
+
+        // Add an event listener for when the page becomes visible again
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                // Page has become visible again (user returned to the app)
+                checkAndUpdateCurrentDay();
+            }
+        });
+
+        // Also check when the page loads initially
+        window.addEventListener('load', function() {
+            checkAndUpdateCurrentDay();
+        });
+
         // Event Listeners
         document.getElementById('prev-month').addEventListener('click', navigateToPreviousMonth);
         document.getElementById('next-month').addEventListener('click', navigateToNextMonth);

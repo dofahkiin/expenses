@@ -11,15 +11,22 @@ updateThemeIcon(currentTheme);
 // Icons for different expense types (you can customize these)
 const expenseIcons = {
     "default": "fas fa-receipt",
-    "rent": "fas fa-home",
-    "bill": "fas fa-file-invoice",
-    "utilities": "fas fa-bolt",
+    "cleverfit": "fas fa-dumbbell",
+    "umbau": "fas fa-money-bill-wave",
+    "magenta": "fas fa-wifi",
+    "sparkasse savings": "fas fa-euro-sign",
+    "apple": "fab fa-apple",
+    "sparkasse expenses": "fas fa-euro-sign",
+    "drei": "fas fa-mobile-alt",
+    "kredit": "fas fa-money-bill-wave",
     "internet": "fas fa-wifi",
-    "phone": "fas fa-mobile-alt",
-    "insurance": "fas fa-shield-alt",
-    "subscription": "fas fa-sync-alt",
-    "tax": "fas fa-balance-scale",
-    "groceries": "fas fa-shopping-basket"
+    "struja": "fas fa-bolt",
+    "cistoca": "fas fa-broom",
+    "zev": "fas fa-building",
+    "di.fm": "fas fa-music",
+    "spotify": "fas fa-music",
+    "mobilni": "fas fa-mobile-alt",
+    "sparkasse": "fas fa-euro-sign"
 };
 
 // Helper function to update theme icon

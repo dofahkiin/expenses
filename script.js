@@ -12,7 +12,7 @@ updateThemeIcon(currentTheme);
 const expenseIcons = {
     "default": "fas fa-receipt",
     "cleverfit": "fas fa-dumbbell",
-    "umbau": "fas fa-money-bill-wave",
+    "umbau": "fas fa-building",
     "magenta": "fas fa-wifi",
     "sparkasse savings": "fas fa-euro-sign",
     "apple": "fab fa-apple",

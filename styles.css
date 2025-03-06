@@ -1,0 +1,330 @@
+:root {
+    /* Light Theme Colors */
+    --primary-color: #4a6fa5;
+    --primary-light: #6e8ebe;
+    --primary-dark: #345286;
+    --accent-color: #f9a826;
+    --text-color: #333333;
+    --background-color: #f5f7fa;
+    --card-background: white;
+    --light-gray: #f5f7fa;
+    --medium-gray: #e1e5eb;
+    --dark-gray: #677788;
+    --danger-color: #e74c3c;
+    --success-color: #2ecc71;
+    --pending-color: #f2eead;
+    --border-color: #e1e5eb;
+    --radius: 12px;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark Theme Colors */
+[data-theme="dark"] {
+    --primary-color: #3d5a80;
+    --primary-light: #5d7599;
+    --primary-dark: #2a3f5a;
+    --accent-color: #f9a826;
+    --text-color: #e0e0e0;
+    --background-color: #121212;
+    --card-background: #1e1e1e;
+    --light-gray: #2a2a2a;
+    --medium-gray: #3a3a3a;
+    --dark-gray: #9e9e9e;
+    --border-color: #333333;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.app-container {
+    background-color: var(--card-background);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.app-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap; /* Prevent wrapping on small screens */
+}
+
+.app-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+    white-space: nowrap; /* Prevent title from wrapping */
+}
+
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    margin-left: 12px; /* Spacing between title and toggle */
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 24px;
+    position: relative;
+    width: 48px;
+    min-width: 48px; /* Ensure minimum width */
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: var(--dark-gray);
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    background-color: white;
+    bottom: 4px;
+    content: "";
+    height: 16px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 16px;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.theme-icon {
+    margin-right: 8px;
+    color: white;
+}
+
+.location-nav {
+    display: flex;
+    background-color: var(--primary-dark);
+    padding: 8px 16px;
+}
+
+.location-button {
+    background-color: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: var(--radius);
+    flex: 1;
+    text-align: center;
+}
+
+.location-button.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.location-button:hover:not(.active) {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.month-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: var(--card-background);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.month-nav button {
+    background-color: var(--primary-light);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.month-nav button:hover {
+    background-color: var(--primary-dark);
+}
+
+.month-nav h3 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-color);
+}
+
+thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 500;
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr {
+    transition: background-color 0.2s;
+}
+
+tbody tr:hover {
+    background-color: var(--light-gray);
+}
+
+.past {
+    border-left: 4px solid var(--success-color);
+}
+
+.upcoming {
+    border-left: 4px solid var(--danger-color);
+}
+
+.expense-amount {
+    font-weight: 500;
+    text-align: right;
+}
+
+.total-section {
+    background-color: var(--primary-light);
+    color: white;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-label {
+    font-weight: 500;
+}
+
+.total-amount {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+#day-select-container {
+    padding: 16px;
+    background-color: var(--card-background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+#day-select {
+    padding: 8px 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--radius);
+    background-color: var(--card-background);
+    color: var(--text-color);
+    min-width: 80px;
+    cursor: pointer;
+}
+
+.expense-icon {
+    color: var(--dark-gray);
+    margin-right: 8px;
+}
+
+/* Fixed width for columns */
+.day-column {
+    width: 60px;
+    text-align: center;
+}
+
+.price-column {
+    width: 100px;
+    text-align: right;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+    }
+    
+    .app-container {
+        border-radius: 0;
+    }
+    
+    th, td {
+        padding: 10px 12px;
+    }
+    
+    /* Smaller font size for the title on very small screens */
+    .app-header h1 {
+        font-size: 1.2rem;
+    }
+
+    /* Reduce the margin between title and toggle */
+    .theme-switch-wrapper {
+        margin-left: 8px;
+    }
+    
+    /* Make the toggle slightly smaller on mobile */
+    .theme-switch {
+        width: 42px;
+        height: 22px;
+        min-width: 42px;
+    }
+    
+    .slider:before {
+        height: 14px;
+        width: 14px;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+}

@@ -1,36 +1,36 @@
 :root {
-    /* Light Theme Colors */
-    --primary-color: #4a6fa5;
-    --primary-light: #6e8ebe;
-    --primary-dark: #345286;
-    --accent-color: #f9a826;
+    /* Light Theme Colors - Greenish */
+    --primary-color: #2e8b57; /* Sea Green */
+    --primary-light: #3cb371; /* Medium Sea Green */
+    --primary-dark: #1b5d3b; /* Darker Green */
+    --accent-color: #f0e68c; /* Khaki - softer yellow */
     --text-color: #333333;
-    --background-color: #f5f7fa;
+    --background-color: #f0f5f0; /* Light mint-tinged background */
     --card-background: white;
-    --light-gray: #f5f7fa;
-    --medium-gray: #e1e5eb;
+    --light-gray: #f0f5f0;
+    --medium-gray: #e0e8e0; /* Slightly green-tinted gray */
     --dark-gray: #677788;
     --danger-color: #e74c3c;
-    --success-color: #2ecc71;
+    --success-color: #27ae60; /* Green success */
     --pending-color: #f2eead;
-    --border-color: #e1e5eb;
+    --border-color: #d0e0d0; /* Light green border */
     --radius: 12px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Dark Theme Colors */
+/* Dark Theme Colors - Greenish */
 [data-theme="dark"] {
-    --primary-color: #3d5a80;
-    --primary-light: #5d7599;
-    --primary-dark: #2a3f5a;
-    --accent-color: #f9a826;
+    --primary-color: #2e8b57; /* Keep the same primary green */
+    --primary-light: #3cb371; /* Medium Sea Green */
+    --primary-dark: #1b5d3b; /* Darker Green */
+    --accent-color: #f0e68c; /* Khaki */
     --text-color: #e0e0e0;
-    --background-color: #121212;
-    --card-background: #1e1e1e;
-    --light-gray: #2a2a2a;
-    --medium-gray: #3a3a3a;
-    --dark-gray: #9e9e9e;
-    --border-color: #333333;
+    --background-color: #1a2a1a; /* Very dark green background */
+    --card-background: #243024; /* Dark green card background */
+    --light-gray: #2a3a2a; /* Dark green-tinted gray */
+    --medium-gray: #3a4a3a; /* Medium green-tinted gray */
+    --dark-gray: #9eae9e; /* Light green-tinted gray */
+    --border-color: #354535; /* Dark green border */
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 

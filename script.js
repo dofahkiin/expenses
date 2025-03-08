@@ -2,6 +2,10 @@ let currentDisplayedDate = new Date();
 let currentExpensesFile = 'at_expenses.json';
 let currentExpensesData = [];
 let currentTheme = localStorage.getItem('theme') || 'light';
+let isDataLoading = false;
+
+// Cache configuration
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 // Set initial theme
 document.documentElement.setAttribute('data-theme', currentTheme);
@@ -50,10 +54,150 @@ function getExpenseIcon(expenseName) {
     return expenseIcons.default;
 }
 
-async function loadExpenses(filename) {
-    const response = await fetch(filename);
-    const data = await response.json();
-    return data.expenses;
+// Cache management functions
+function getCachedData(filename) {
+    try {
+        const cacheKey = `expenses_cache_${filename}`;
+        const cachedItem = localStorage.getItem(cacheKey);
+        
+        if (!cachedItem) {
+            return null;
+        }
+        
+        const cachedData = JSON.parse(cachedItem);
+        
+        // Check if cache is expired
+        if (cachedData.timestamp && (Date.now() - cachedData.timestamp > CACHE_EXPIRY)) {
+            // Cache expired, remove it
+            localStorage.removeItem(cacheKey);
+            return null;
+        }
+        
+        return cachedData.data;
+    } catch (error) {
+        console.error('Error reading from cache:', error);
+        return null;
+    }
+}
+
+function saveToCache(filename, data) {
+    try {
+        const cacheKey = `expenses_cache_${filename}`;
+        const cacheData = {
+            timestamp: Date.now(),
+            data: data
+        };
+        
+        localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+    } catch (error) {
+        console.error('Error saving to cache:', error);
+    }
+}
+
+// Status indicator
+function showLoadingIndicator() {
+    const table = document.querySelector('table');
+    table.classList.add('loading');
+    
+    // Check if loading indicator already exists
+    if (!document.getElementById('loading-indicator')) {
+        // Create loading indicator
+        const indicator = document.createElement('div');
+        indicator.id = 'loading-indicator';
+        indicator.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Loading...';
+        
+        // Insert after table
+        table.parentNode.insertBefore(indicator, table.nextSibling);
+    }
+}
+
+function hideLoadingIndicator() {
+    const table = document.querySelector('table');
+    table.classList.remove('loading');
+    
+    // Remove loading indicator if it exists
+    const indicator = document.getElementById('loading-indicator');
+    if (indicator) {
+        indicator.remove();
+    }
+}
+
+// Modified loadExpenses function to use cache
+async function loadExpenses(filename, forceRefresh = false) {
+    // If we're already loading data, return the cached data if available
+    if (isDataLoading && !forceRefresh) {
+        const cachedData = getCachedData(filename);
+        if (cachedData) {
+            return cachedData.expenses;
+        }
+    }
+    
+    isDataLoading = true;
+    showLoadingIndicator();
+    
+    try {
+        // Try to get data from cache first (unless forceRefresh is true)
+        if (!forceRefresh) {
+            const cachedData = getCachedData(filename);
+            if (cachedData) {
+                hideLoadingIndicator();
+                isDataLoading = false;
+                
+                // Attempt to refresh the cache in the background
+                refreshCacheInBackground(filename);
+                
+                return cachedData.expenses;
+            }
+        }
+        
+        // No cache or force refresh, fetch from server
+        const response = await fetch(filename);
+        
+        if (!response.ok) {
+            throw new Error(`Failed to fetch ${filename}: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        // Save the new data to cache
+        saveToCache(filename, data);
+        
+        return data.expenses;
+    } catch (error) {
+        console.error(`Error loading expenses from ${filename}:`, error);
+        
+        // If fetch fails, try to get from cache as fallback
+        const cachedData = getCachedData(filename);
+        if (cachedData) {
+            console.log('Using cached data as fallback after fetch error');
+            return cachedData.expenses;
+        } else {
+            // Show error message to user
+            const tableBody = document.getElementById('expenses-table-body');
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--danger-color);">Failed to load data. Please check your connection and try again.</td></tr>';
+            return [];
+        }
+    } finally {
+        hideLoadingIndicator();
+        isDataLoading = false;
+    }
+}
+
+// Function to refresh cache in background without blocking UI
+async function refreshCacheInBackground(filename) {
+    try {
+        const response = await fetch(filename);
+        
+        if (!response.ok) {
+            return; // Silent fail for background refresh
+        }
+        
+        const data = await response.json();
+        saveToCache(filename, data);
+        console.log(`Background cache refresh completed for ${filename}`);
+    } catch (error) {
+        console.log(`Background cache refresh failed for ${filename}`);
+    }
 }
 
 function isExpenseVisible(expense, currentDate, currentExpensesFile) {
@@ -139,36 +283,40 @@ function updateCurrentMonthDisplay(date) {
     currentMonthDisplay.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-async function updateExpensesTable(date) {
-    const expenses = await loadExpenses(currentExpensesFile);
-    currentExpensesData = expenses;
-    const tableBody = document.getElementById('expenses-table-body');
-    tableBody.innerHTML = '';
+async function updateExpensesTable(date, forceRefresh = false) {
+    try {
+        const expenses = await loadExpenses(currentExpensesFile, forceRefresh);
+        currentExpensesData = expenses;
+        const tableBody = document.getElementById('expenses-table-body');
+        tableBody.innerHTML = '';
 
-    const filteredExpenses = expenses.filter(expense => {
-        const expenseMonth = expense.month;
-        if (expenseMonth === "all" || expenseMonth === "quarterly") {
-            return isExpenseVisible(expense, date, currentExpensesFile);
+        const filteredExpenses = expenses.filter(expense => {
+            const expenseMonth = expense.month;
+            if (expenseMonth === "all" || expenseMonth === "quarterly") {
+                return isExpenseVisible(expense, date, currentExpensesFile);
+            }
+
+            if (currentExpensesFile === 'at_expenses.json') {
+                const expenseMonthIndex = new Date(Date.parse(expenseMonth + " 1, 2023")).getMonth();
+                return date.getMonth() === expenseMonthIndex;
+            } else {
+                return false;
+            }
+        });
+
+        for (const expense of filteredExpenses) {
+            const row = createExpenseRow(expense, date);
+            tableBody.appendChild(row);
         }
 
-        if (currentExpensesFile === 'at_expenses.json') {
-            const expenseMonthIndex = new Date(Date.parse(expenseMonth + " 1, 2023")).getMonth();
-            return date.getMonth() === expenseMonthIndex;
-        } else {
-            return false;
-        }
-    });
-
-    for (const expense of filteredExpenses) {
-        const row = createExpenseRow(expense, date);
-        tableBody.appendChild(row);
+        const totalRemaining = calculateTotalRemainingExpenses(filteredExpenses, date);
+        document.getElementById('total-remaining-expenses').textContent = totalRemaining.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    } catch (error) {
+        console.error('Error updating expenses table:', error);
     }
-
-    const totalRemaining = calculateTotalRemainingExpenses(filteredExpenses, date);
-    document.getElementById('total-remaining-expenses').textContent = totalRemaining.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
 }
 
 function navigateToPreviousMonth() {
@@ -246,6 +394,11 @@ function checkAndUpdateCurrentDay() {
     }
 }
 
+// Function to handle refresh button click
+function refreshData() {
+    updateExpensesTable(currentDisplayedDate, true); // Force refresh
+}
+
 // Add an event listener for when the page becomes visible again
 document.addEventListener('visibilitychange', function() {
     if (!document.hidden) {
@@ -254,9 +407,67 @@ document.addEventListener('visibilitychange', function() {
     }
 });
 
+// Connection status management
+function updateConnectionStatus() {
+    const statusElement = document.getElementById('connection-status');
+    
+    if (!navigator.onLine) {
+        statusElement.textContent = 'Offline Mode';
+        statusElement.className = 'connection-status offline';
+    } else {
+        // Check if we're using cached data
+        const cacheKey = `expenses_cache_${currentExpensesFile}`;
+        const cachedItem = localStorage.getItem(cacheKey);
+        
+        if (cachedItem) {
+            const cachedAge = Date.now() - JSON.parse(cachedItem).timestamp;
+            const hoursOld = Math.floor(cachedAge / (1000 * 60 * 60));
+            
+            if (hoursOld > 0) {
+                statusElement.textContent = `Cached (${hoursOld}h old)`;
+                statusElement.className = 'connection-status cached';
+            } else {
+                statusElement.className = 'connection-status';
+            }
+        } else {
+            statusElement.className = 'connection-status';
+        }
+    }
+}
+
+// Initialize the app
+async function initializeApp() {
+    try {
+        // Update connection status
+        updateConnectionStatus();
+        
+        // Pre-cache both expense files
+        await loadExpenses('at_expenses.json');
+        await loadExpenses('bh_expenses.json');
+        
+        checkAndUpdateCurrentDay();
+        updateExpensesTable(currentDisplayedDate);
+        updateCurrentMonthDisplay(currentDisplayedDate);
+        updateDaySelect();
+    } catch (error) {
+        console.error('Error initializing app:', error);
+    }
+}
+
 // Also check when the page loads initially
 window.addEventListener('load', function() {
-    checkAndUpdateCurrentDay();
+    initializeApp();
+});
+
+// Online/offline event listeners
+window.addEventListener('online', function() {
+    updateConnectionStatus();
+    // Try to refresh data when back online
+    refreshData();
+});
+
+window.addEventListener('offline', function() {
+    updateConnectionStatus();
 });
 
 // Event Listeners
@@ -267,13 +478,17 @@ document.getElementById('at-button').addEventListener('click', () => {
     currentExpensesFile = 'at_expenses.json';
     toggleLocationButton('at-button');
     updateExpensesTable(currentDisplayedDate);
+    updateConnectionStatus();
 });
 
 document.getElementById('bh-button').addEventListener('click', () => {
     currentExpensesFile = 'bh_expenses.json';
     toggleLocationButton('bh-button');
     updateExpensesTable(currentDisplayedDate);
+    updateConnectionStatus();
 });
+
+document.getElementById('refresh-button').addEventListener('click', refreshData);
 
 document.getElementById('day-select').addEventListener('change', () => {
     const selectedDay = parseInt(document.getElementById('day-select').value);
@@ -283,8 +498,3 @@ document.getElementById('day-select').addEventListener('change', () => {
 
 // Theme toggle event listener
 document.getElementById('theme-toggle').addEventListener('change', switchTheme);
-
-// Initial setup
-updateExpensesTable(currentDisplayedDate);
-updateCurrentMonthDisplay(currentDisplayedDate);
-updateDaySelect();

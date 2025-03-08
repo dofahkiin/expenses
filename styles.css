@@ -56,6 +56,7 @@ body {
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     overflow: hidden;
+    position: relative;
 }
 
 .app-header {
@@ -195,6 +196,11 @@ table {
     width: 100%;
     border-collapse: collapse;
     color: var(--text-color);
+    position: relative;
+}
+
+table.loading {
+    opacity: 0.7;
 }
 
 thead {
@@ -277,6 +283,54 @@ tbody tr:hover {
     margin-right: 8px;
 }
 
+/* Loading indicator */
+#loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#loading-indicator i {
+    font-size: 1.2rem;
+}
+
+/* Refresh button */
+.refresh-button {
+    background-color: var(--primary-light);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: auto;
+    margin-right: 16px;
+}
+
+.refresh-button:hover {
+    background-color: var(--primary-dark);
+    transform: rotate(180deg);
+}
+
+.refresh-button i {
+    font-size: 1rem;
+}
+
 /* Fixed width for columns */
 .day-column {
     width: 60px;
@@ -286,6 +340,29 @@ tbody tr:hover {
 .price-column {
     width: 100px;
     text-align: right;
+}
+
+/* Offline indicator */
+.connection-status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: none;
+}
+
+.offline {
+    display: inline-block;
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.cached {
+    display: inline-block;
+    background-color: var(--pending-color);
+    color: black;
 }
 
 /* Responsive adjustments */

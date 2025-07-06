@@ -1,7 +1,7 @@
 {
   "expenses": [
     {
-      "day": 1,
+      "day": 2,
       "month": "all",
       "expense": "Cleverfit",
       "price": -30,
@@ -24,8 +24,8 @@
     {
       "day": 18,
       "month": "all",
-      "expense": "Magenta",
-      "price": -42,
+      "expense": "A1",
+      "price": -30,
       "recurring": "monthly"
     },
     {

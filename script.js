@@ -17,7 +17,7 @@ const expenseIcons = {
     "default": "fas fa-receipt",
     "cleverfit": "fas fa-dumbbell",
     "umbau": "fas fa-building",
-    "magenta": "fas fa-wifi",
+    "a1": "fas fa-wifi",
     "sparkasse savings": "fas fa-euro-sign",
     "apple": "fab fa-apple",
     "sparkasse expenses": "fas fa-euro-sign",

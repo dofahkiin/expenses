@@ -29,20 +29,6 @@
         "recurring": "monthly"
       },
       {
-        "day": 15,
-        "month": "all",
-        "expense": "DI.FM",
-        "price": -5.5,
-        "recurring": "monthly"
-      },
-      {
-        "day": 18,
-        "month": "all",
-        "expense": "Spotify",
-        "price": -15,
-        "recurring": "monthly"
-      },
-      {
         "day": 27,
         "month": "all",
         "expense": "Mobilni",

@@ -268,7 +268,8 @@ function calculateTotalRemainingExpenses(expenses, currentDate) {
             const expenseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), expense.day);
 
             if (expenseDate > todayDate) {
-                totalRemainingExpenses += expense.price;
+                const amount = expense.price < 0 ? -expense.price : expense.price;
+                totalRemainingExpenses += amount;
             }
         }
     }
@@ -319,18 +320,33 @@ async function updateExpensesTable(date, forceRefresh = false) {
     }
 }
 
-function navigateToPreviousMonth() {
-    currentDisplayedDate.setMonth(currentDisplayedDate.getMonth() - 1);
+function getClampedDate(baseDate, monthOffset) {
+    const desiredDay = baseDate.getDate();
+    const targetYear = baseDate.getFullYear();
+    const targetMonth = baseDate.getMonth() + monthOffset;
+
+    const tempDate = new Date(targetYear, targetMonth, 1);
+    const daysInTargetMonth = new Date(tempDate.getFullYear(), tempDate.getMonth() + 1, 0).getDate();
+    tempDate.setDate(Math.min(desiredDay, daysInTargetMonth));
+
+    return tempDate;
+}
+
+function updateDisplayedDate(date) {
+    currentDisplayedDate = date;
     updateExpensesTable(currentDisplayedDate);
     updateCurrentMonthDisplay(currentDisplayedDate);
     updateDaySelect();
 }
 
+function navigateToPreviousMonth() {
+    const newDate = getClampedDate(currentDisplayedDate, -1);
+    updateDisplayedDate(newDate);
+}
+
 function navigateToNextMonth() {
-    currentDisplayedDate.setMonth(currentDisplayedDate.getMonth() + 1);
-    updateExpensesTable(currentDisplayedDate);
-    updateCurrentMonthDisplay(currentDisplayedDate);
-    updateDaySelect();
+    const newDate = getClampedDate(currentDisplayedDate, 1);
+    updateDisplayedDate(newDate);
 }
 
 function toggleLocationButton(buttonId) {
@@ -406,6 +422,13 @@ document.addEventListener('visibilitychange', function() {
         checkAndUpdateCurrentDay();
     }
 });
+
+// Periodically verify the displayed day while the page stays open
+setInterval(() => {
+    if (!document.hidden) {
+        checkAndUpdateCurrentDay();
+    }
+}, 60 * 1000);
 
 // Connection status management
 function updateConnectionStatus() {

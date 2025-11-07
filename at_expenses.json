@@ -15,24 +15,10 @@
       "recurring": "monthly"
     },
     {
-        "day": 18,
-        "month": "february",
-        "expense": "Magenta",
-        "price": -25,
-        "recurring": "yearly"
-      },
-    {
       "day": 18,
       "month": "all",
       "expense": "A1",
       "price": -30,
-      "recurring": "monthly"
-    },
-    {
-      "day": 25,
-      "month": "all",
-      "expense": "Sparkasse savings",
-      "price": -50,
       "recurring": "monthly"
     },
     {

@@ -1,13 +1,6 @@
 {
     "expenses": [
       {
-        "day": 2,
-        "month": "all",
-        "expense": "Kredit",
-        "price": -155,
-        "recurring": "monthly"
-      },
-      {
         "day": 4,
         "month": "all",
         "expense": "Internet",
